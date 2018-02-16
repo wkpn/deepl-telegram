@@ -5,7 +5,6 @@ from deepl import DeepL
 
 source = 'EN'
 target = 'FR'
-global message_id_to
 
 flags = {
     '🇺🇸': 'EN',
