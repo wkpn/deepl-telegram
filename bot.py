@@ -106,6 +106,8 @@ if __name__ == '__main__':
 
     up.dispatcher.add_handler(CommandHandler('start', start))
     up.dispatcher.add_handler(MessageHandler(Filters.text, translate))
+    # callback_query has a pattern
+    # stackoverflow.com/questions/41195822/multiple-callback-query-handlers
     up.dispatcher.add_handler(CallbackQueryHandler(button))
 
     up.start_polling()
