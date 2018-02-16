@@ -5,6 +5,7 @@ from deepl import DeepL
 
 source = 'EN'
 target = 'FR'
+global message_id_to
 
 flags = {
     '🇺🇸': 'EN',
@@ -35,6 +36,7 @@ def start(bot, update):
     update.message.reply_text('Hello! I am DeepL translator bot. Select language you want to translate into, '
                               'send me your message and I will translate it.',
                               reply_markup=reply_markup)
+    info(bot, update)
 
 
 def button(bot, update):
@@ -44,41 +46,52 @@ def button(bot, update):
     query = update.callback_query
 
     if 'from' in query.data:
-
         source = query.data[:2]
+
         bot.edit_message_text(text="Translating from: {}".format(meaning[source]),
                               chat_id=query.message.chat_id,
                               message_id=query.message.message_id)
     else:
         target = query.data
+
         bot.edit_message_text(text="Translating to: {}".format(meaning[target]),
                               chat_id=query.message.chat_id,
                               message_id=query.message.message_id)
 
 
+def translate_from(bot, update):
+    buttons = [[InlineKeyboardButton(text=f, callback_data=flags[f] + ' from') for f in flags]]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    update.message.reply_text('Please choose language to translate from:', reply_markup=reply_markup)
+
+
+def translate_to(bot, update):
+    buttons = [[InlineKeyboardButton(text=f, callback_data=flags[f]) for f in flags if flags[f] != source]]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    update.message.reply_text('Please choose language to translate into:', reply_markup=reply_markup)
+
+
+def info(bot, update):
+    global source, target
+    update.message.reply_text('Currently translating from {0} to {1}'.format(meaning[source], meaning[target]))
+
+
 def translate(bot, update):
 
-    global source
-    global target
+    global source, target
 
     text = update.message.text
 
     if text == 'From':
-
-        buttons = [[InlineKeyboardButton(text=f, callback_data=flags[f] + ' from') for f in flags]]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        update.message.reply_text('Please choose language to translate from:', reply_markup=reply_markup)
+        translate_from(bot, update)
         return
 
     elif text == 'To':
-
-        buttons = [[InlineKeyboardButton(text=f, callback_data=flags[f]) for f in flags if flags[f] != source]]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        update.message.reply_text('Please choose language to translate into:', reply_markup=reply_markup)
+        translate_to(bot, update)
         return
 
     elif text == 'ℹ️':
-        update.message.reply_text('Currently translating from {0} to {1}'.format(meaning[source], meaning[target]))
+        info(bot, update)
         return
 
     result, data = d.translate(text, source=source, target=target)
@@ -88,7 +101,6 @@ def translate(bot, update):
 if __name__ == '__main__':
 
     import sys
-
     up = Updater(sys.argv[1])
 
     d = DeepL()

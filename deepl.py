@@ -41,7 +41,7 @@ class DeepL:
 
         for i, orig_sentence in enumerate(original_sentences):
             if translated_sentences[i] is None:
-                translated_sentences[i] = orig_sentence  # Sentence couldn't be translated
+                translated_sentences[i] = orig_sentence
 
             whitespace = re.findall(r'^\s*', original_text)[0]
             translated_sentences[i] = whitespace + translated_sentences[i]
@@ -50,7 +50,7 @@ class DeepL:
             if original_text.startswith(orig_sentence):
                 original_text = original_text[len(orig_sentence):]
             else:
-                print('\n\nSomething went wrong. Please report this to the maintainers.', file=sys.stderr)
+                print('\n\nSomething went wrong.', file=sys.stderr)
 
         return ''''''.join(translated_sentences)
 
@@ -132,17 +132,16 @@ class DeepL:
         if not target is None:
             payload['params']['lang']['target_lang'] = target
 
-        response = requests.post(url, data=json.dumps(payload), headers=headers).json()
+        r = requests.post(url, data=json.dumps(payload), headers=headers).json()
 
         result = {
             'translations': [
-                # FIXME: Not very readable
-                response['result']['translations'][i]['beams'][0]['postprocessed_sentence']
-                if len(response['result']['translations'][i]['beams']) else None
-                for i in range(len(response['result']['translations']))
+                r['result']['translations'][i]['beams'][0]['postprocessed_sentence']
+                if len(r['result']['translations'][i]['beams']) else None
+                for i in range(len(r['result']['translations']))
             ],
-            'source': response['result']['source_lang'],
-            'target': response['result']['target_lang']
+            'source': r['result']['source_lang'],
+            'target': r['result']['target_lang']
         }
 
         return result
