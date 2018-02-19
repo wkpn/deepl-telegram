@@ -6,6 +6,7 @@ from time import sleep
 
 source = 'EN'
 target = 'FR'
+selected = False
 
 flags = {
     '🇺🇸': 'EN',
@@ -57,7 +58,7 @@ def from_callback(bot, update):
 
 
 def to_callback(bot, update):
-    global source, target
+    global source, target, selected
 
     query = update.callback_query
     target = query.data[2:]
@@ -65,9 +66,18 @@ def to_callback(bot, update):
     bot.edit_message_text(text="Currently translating from {} to {}".format(meaning[source], meaning[target]),
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
+    selected = False
 
 
 def setup(bot, update):
+    global selected
+
+    if selected:
+        update.message.reply_text('You have to choose languages in the message above')
+        return
+
+    selected = True
+
     buttons = [[InlineKeyboardButton(text=f, callback_data= 'from' + flags[f]) for f in flags]]
     reply_markup = InlineKeyboardMarkup(buttons)
     update.message.reply_text('Please choose language to translate from:', reply_markup=reply_markup)
