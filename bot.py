@@ -49,7 +49,7 @@ def to_callback(bot, update):
 def setup(bot, update):
     is_selected = get_from_db(update.message.chat_id, is_selected=True)
 
-    if is_selected == 1:
+    if is_selected == (0,):
         update.message.reply_text('You have to choose languages in the message above')
         return
 
