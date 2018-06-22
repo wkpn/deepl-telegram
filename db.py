@@ -16,9 +16,10 @@ def add_user_to_db(chat_id, source, target):
     try:
         conn.cursor().execute('INSERT INTO users VALUES (?,?,?,?)', (chat_id, source, target, 0))
         conn.commit()
-        conn.close()
     except sqlite3.IntegrityError:  # it means user is already in db
         pass
+    finally:
+        conn.close()
 
 
 def get_from_db(chat_id, **kwargs):
