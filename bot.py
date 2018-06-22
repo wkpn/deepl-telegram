@@ -16,8 +16,6 @@ def start(bot, update):
     update.message.reply_text('Press Setup button to select your languages (from -> to)')
     update.message.reply_text('Press ℹ️ button to view current setup', reply_markup=reply_markup)
 
-    info(bot, update)
-
 
 def from_callback(bot, update):
     query = update.callback_query
@@ -100,4 +98,3 @@ if __name__ == '__main__':
                      port=PORT)
     up.bot.set_webhook(url=f'https://{DOMAIN}/{TOKEN}')
     up.idle()
-
