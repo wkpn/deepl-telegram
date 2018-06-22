@@ -5,7 +5,7 @@ import sqlite3
 def setup_db():
     conn = sqlite3.connect(f'{db_name}')
     try:
-        conn.cursor().execute('CREATE TABLE users (chat_id integer, source text, target text, is_selected integer)')
+        conn.cursor().execute('CREATE TABLE users (chat_id integer, source text, target text, is_selected text)')
         conn.commit()
         conn.close()
         print(f'Created new database {db_name}')
