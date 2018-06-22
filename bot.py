@@ -53,7 +53,7 @@ def setup(bot, update):
         update.message.reply_text('You have to choose languages in the message above')
         return
 
-    update_in_db(update.message.chat_id, is_selected=True)
+    update_in_db(update.message.chat_id, is_selected=1)
 
     buttons = [[InlineKeyboardButton(text=f, callback_data='from' + flags[f]) for f in flags]]
     reply_markup = InlineKeyboardMarkup(buttons)
