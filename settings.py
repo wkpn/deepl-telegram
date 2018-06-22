@@ -1,4 +1,6 @@
 DOMAIN = ''
+PORT = 5000  # SHOULD BE THE SAME AS IN YOUR SERVER.CONF FILE
+TOKEN = "YOUR_BOT_TOKEN"
 
 db_name = 'settings.db'
 

@@ -11,6 +11,7 @@ def setup_db():
     except sqlite3.OperationalError:
         pass
 
+
 def add_to_db(chat_id, source, target):
     conn = sqlite3.connect(f'{db_name}')
     conn.cursor().execute('INSERT INTO users VALUES (?,?,?,?)', (chat_id, source, target, 0))

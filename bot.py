@@ -1,7 +1,7 @@
 from telegram import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CallbackQueryHandler, CommandHandler, MessageHandler, Filters
 from db import setup_db, add_to_db, get_from_db, update_in_db
-from settings import flags, meaning, DOMAIN
+from settings import flags, meaning, TOKEN, DOMAIN, PORT
 from api import DeepL
 import sys
 
@@ -60,7 +60,7 @@ def setup(bot, update):
 
 def info(bot, update):
     source, target = get_from_db(chat_id=update.message.chat_id, source=True, target=True)
-    update.message.reply_text('Currently translating from {0} to {1}'.format(meaning[source], meaning[target]))
+    update.message.reply_text(f'Currently translating from {meaning[source]} to {meaning[target]}')
 
 
 def translate(bot, update):
@@ -80,9 +80,6 @@ def translate(bot, update):
 
 
 if __name__ == '__main__':
-    TOKEN = sys.argv[1]
-    PORT = 5000
-
     up = Updater(TOKEN)
     setup_db()
     d = DeepL()
@@ -94,7 +91,7 @@ if __name__ == '__main__':
     up.dispatcher.add_handler(CallbackQueryHandler(to_callback, pattern='^to'))
 
     up.start_webhook(listen='127.0.0.1',
-                     url_path=f'{TOKEN}',
+                     url_path=f'{TOKEN}',  # should be the same as in your server.conf file (I prefer to use TOKEN)
                      port=PORT)
     up.bot.set_webhook(url=f'{DOMAIN}/{TOKEN}')
     up.idle()
