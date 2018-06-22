@@ -96,5 +96,5 @@ if __name__ == '__main__':
     up.start_webhook(listen='127.0.0.1',
                      url_path=f'{TOKEN}',
                      port=PORT)
-    up.bot.set_webhook(url=f'https://{DOMAIN}/{TOKEN}')
+    up.bot.set_webhook(url=f'{DOMAIN}/{TOKEN}')
     up.idle()
