@@ -12,30 +12,30 @@ def setup_db():
 
 def add_user_to_db(chat_id, source, target):
     conn = sqlite3.connect(f'{db_name}')
+
     try:
         conn.cursor().execute('INSERT INTO users VALUES (?,?,?,?)', (chat_id, source, target, 0))
         conn.commit()
         conn.close()
-    except sqlite3.IntegrityError:
+    except sqlite3.IntegrityError:  # it means user is already in db
         pass
 
 
 def get_from_db(chat_id, **kwargs):
-    command = ', '.join(key for key in kwargs)
+    values = ', '.join(key for key in kwargs)
 
     conn = sqlite3.connect(f'{db_name}')
-    data = conn.cursor().execute(f"SELECT {command} FROM users WHERE chat_id={chat_id}").fetchone()
+    data = conn.cursor().execute(f"SELECT {values} FROM users WHERE chat_id={chat_id}").fetchone()
 
     if len(data) == 1:
         return data[0]
-
     return data
 
 
 def update_in_db(chat_id, **kwargs):
-    command = ', '.join(f"{key}='{value}'" for key, value in kwargs.items())
+    key_values = ', '.join(f"{key}='{value}'" for key, value in kwargs.items())
 
     conn = sqlite3.connect(f'{db_name}')
-    conn.cursor().execute(f'UPDATE users SET {command} WHERE chat_id={chat_id}')
+    conn.cursor().execute(f'UPDATE users SET {key_values} WHERE chat_id={chat_id}')
     conn.commit()
     conn.close()

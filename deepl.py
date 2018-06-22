@@ -66,7 +66,6 @@ class DeepL:
                 splitted_paragraphs.append([paragraph])
 
         self.request_id += 1
-
         current_id = self.request_id
 
         url = 'https://www.deepl.com/jsonrpc'
@@ -116,15 +115,12 @@ class DeepL:
             'id': current_id,
         }
 
-        if not source is None:
-            payload['params']['lang']['source_lang_user_selected'] = source
-
-        if not target is None:
-            payload['params']['lang']['target_lang'] = target
+        payload['params']['lang']['source_lang_user_selected'] = source
+        payload['params']['lang']['target_lang'] = target
 
         r = requests.post(url, data=json.dumps(payload), headers=headers).json()
 
-        result = {
+        return {
             'translations': [
                 r['result']['translations'][i]['beams'][0]['postprocessed_sentence']
                 if len(r['result']['translations'][i]['beams']) else None
@@ -133,5 +129,3 @@ class DeepL:
             'source': r['result']['source_lang'],
             'target': r['result']['target_lang']
         }
-
-        return result

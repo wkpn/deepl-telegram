@@ -10,7 +10,7 @@ def start(bot, update):
 
     update.message.reply_text('Hello! I am DeepL translator bot. Send me your message and I will translate it.')
     update.message.reply_text('Use /setup command to select your languages (from -> to)')
-    update.message.reply_text('Use /info command to view your current setup')
+    update.message.reply_text('Use /info command to view your current translation setup')
 
 
 def from_callback(bot, update):
@@ -51,6 +51,7 @@ def setup(bot, update):
 
     buttons = [[InlineKeyboardButton(text=f, callback_data='from' + flags[f]) for f in flags]]
     reply_markup = InlineKeyboardMarkup(buttons)
+
     update.message.reply_text('Please choose language to translate from:', reply_markup=reply_markup)
 
 
