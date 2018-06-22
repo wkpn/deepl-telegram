@@ -30,6 +30,8 @@ def get_from_db(chat_id, **kwargs):
     data = conn.cursor().execute(f"SELECT {command} FROM users WHERE chat_id={chat_id}").fetchone()
     print(f'Got {data} from db for {chat_id} with kwargs {kwargs}')
 
+    if len(data) == 1:
+        return data[0]
     return data
 
 
