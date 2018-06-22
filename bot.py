@@ -9,8 +9,8 @@ def start(bot, update):
     add_user_to_db(update.message.chat_id, 'EN', 'FR')
 
     update.message.reply_text('Hello! I am DeepL translator bot. Send me your message and I will translate it.')
-    update.message.reply_text('Use /setup button to select your languages (from -> to)')
-    update.message.reply_text('Use /️info button to view your current setup')
+    update.message.reply_text('Use /setup command to select your languages (from -> to)')
+    update.message.reply_text('Use /info command to view your current setup')
 
 
 def from_callback(bot, update):
