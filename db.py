@@ -8,10 +8,9 @@ def setup_db():
         conn.cursor().execute('CREATE TABLE users (chat_id text, source text, target text, is_selected integer)')
         conn.commit()
         conn.close()
+        print(f'Created new database {db_name}')
     except sqlite3.OperationalError:
         print(f'Loaded database {db_name}')
-    finally:
-        print(f'Created new database {db_name}')
 
 
 def add_to_db(chat_id, source, target):
