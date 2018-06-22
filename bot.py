@@ -38,7 +38,7 @@ def to_callback(bot, update):
     query = update.callback_query
     target = query.data[2:]
 
-    update_in_db(query.message.chat_id, target=target, is_selected='1')
+    update_in_db(query.message.chat_id, target=target, is_selected='0')
     source = get_from_db(query.message.chat_id, source=True)
 
     bot.edit_message_text(text="Currently translating from {} to {}".format(meaning[source], meaning[target]),
