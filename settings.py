@@ -5,22 +5,10 @@ TOKEN = "YOUR_BOT_TOKEN"
 db_name = 'settings.db'
 
 flags = {
-    '🇺🇸': 'EN',
-    '🇫🇷': 'FR',
-    '🇩🇪': 'DE',
-    '🇮🇹': 'IT',
-    '🇪🇸': 'ES',
-    '🇱🇺': 'NL',
-    '🇲🇨': 'PL'
+    '🇺🇸': 'EN', '🇫🇷': 'FR', '🇩🇪': 'DE', '🇮🇹': 'IT', '🇪🇸': 'ES', '🇱🇺': 'NL', '🇲🇨': 'PL'
 }
 
 meaning = {
-    'EN': 'English',
-    'FR': 'French',
-    'DE': 'German',
-    'IT': 'Italian',
-    'ES': 'Spanish',
-    'NL': 'Dutch',
-    'PL': 'Polish'
+    'EN': 'English', 'FR': 'French', 'DE': 'German', 'IT': 'Italian', 'ES': 'Spanish', 'NL': 'Dutch', 'PL': 'Polish'
 }
 

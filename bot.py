@@ -61,6 +61,12 @@ def info(bot, update):
 
 
 def translate(bot, update):
+    lock = get_from_db(update.message.chat_id, lock=True)
+
+    if lock == '1':
+        update.message.reply_text('You have to choose languages in the message above')
+        return
+
     text = update.message.text
     source, target = get_from_db(chat_id=update.message.chat_id, source=True, target=True)
     result, data = deepl.translate(text, source=source, target=target)
