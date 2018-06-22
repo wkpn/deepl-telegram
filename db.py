@@ -4,7 +4,7 @@ import sqlite3
 
 def setup_db():
     conn = sqlite3.connect(f'{db_name}')
-    conn.cursor().execute('CREATE TABLE users (chat_id text, source text, target text, is_selected boolean)')
+    conn.cursor().execute('CREATE TABLE users (chat_id text, source text, target text, is_selected integer)')
     conn.commit()
     conn.close()
 
@@ -12,7 +12,7 @@ def setup_db():
 
 
 def add_to_db(chat_id, source, target):
-    user = (chat_id, source, target, False)
+    user = (chat_id, source, target, 0)
     conn = sqlite3.connect(f'{db_name}')
     conn.cursor().execute('INSERT INTO users VALUES (?,?,?,?)', user)
     conn.commit()

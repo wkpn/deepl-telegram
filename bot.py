@@ -38,7 +38,7 @@ def to_callback(bot, update):
     query = update.callback_query
     target = query.data[2:]
 
-    update_in_db(query.message.chat_id, target=target, is_selected=False)
+    update_in_db(query.message.chat_id, target=target, is_selected=1)
     source = get_from_db(query.message.chat_id, source=True)
 
     bot.edit_message_text(text="Currently translating from {} to {}".format(meaning[source], meaning[target]),
@@ -49,7 +49,7 @@ def to_callback(bot, update):
 def setup(bot, update):
     is_selected = get_from_db(update.message.chat_id, is_selected=True)
 
-    if is_selected:
+    if is_selected == 1:
         update.message.reply_text('You have to choose languages in the message above')
         return
 
