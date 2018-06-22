@@ -1,8 +1,8 @@
-from telegram import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CallbackQueryHandler, CommandHandler, MessageHandler, Filters
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from db import setup_db, add_user_to_db, get_from_db, update_in_db
 from settings import flags, meaning, TOKEN, DOMAIN, PORT
-from .deepl import DeepL
+from deepl import DeepL
 
 
 def start(bot, update):
