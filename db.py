@@ -26,7 +26,7 @@ def get_from_db(chat_id, **kwargs):
     command = ', '.join(key for key in kwargs)
 
     data = conn.cursor().execute(f"SELECT {command} FROM users WHERE chat_id='{chat_id}'").fetchone()
-    print(f'Got {kwargs} from db for {chat_id}')
+    print(f'Got {data} from db for {chat_id} with kwargs {kwargs}')
 
     return data
 
