@@ -1,20 +1,16 @@
 from telegram import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CallbackQueryHandler, CommandHandler, MessageHandler, Filters
-from db import setup_db, add_to_db, get_from_db, update_in_db
+from db import setup_db, add_user_to_db, get_from_db, update_in_db
 from settings import flags, meaning, TOKEN, DOMAIN, PORT
-from api import DeepL
-import sys
+from .deepl import DeepL
 
 
 def start(bot, update):
-    add_to_db(update.message.chat_id, 'EN', 'FR')
-
-    keyboard = [[KeyboardButton('Setup'), KeyboardButton('ℹ️')]]
-    reply_markup = ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
+    add_user_to_db(update.message.chat_id, 'EN', 'FR')
 
     update.message.reply_text('Hello! I am DeepL translator bot. Send me your message and I will translate it.')
-    update.message.reply_text('Press Setup button to select your languages (from -> to)')
-    update.message.reply_text('Press ℹ️ button to view current setup', reply_markup=reply_markup)
+    update.message.reply_text('Use /setup button to select your languages (from -> to)')
+    update.message.reply_text('Use /️info button to view your current setup')
 
 
 def from_callback(bot, update):
@@ -36,7 +32,7 @@ def to_callback(bot, update):
     query = update.callback_query
     target = query.data[2:]
 
-    update_in_db(query.message.chat_id, target=target, is_selected='0')
+    update_in_db(query.message.chat_id, target=target, lock='0')
     source = get_from_db(query.message.chat_id, source=True)
 
     bot.edit_message_text(text="Currently translating from {} to {}".format(meaning[source], meaning[target]),
@@ -45,13 +41,13 @@ def to_callback(bot, update):
 
 
 def setup(bot, update):
-    is_selected = get_from_db(update.message.chat_id, is_selected=True)
+    lock = get_from_db(update.message.chat_id, lock=True)
 
-    if is_selected == '1':
+    if lock == '1':
         update.message.reply_text('You have to choose languages in the message above')
         return
 
-    update_in_db(update.message.chat_id, is_selected='1')
+    update_in_db(update.message.chat_id, lock='1')
 
     buttons = [[InlineKeyboardButton(text=f, callback_data='from' + flags[f]) for f in flags]]
     reply_markup = InlineKeyboardMarkup(buttons)
@@ -65,33 +61,25 @@ def info(bot, update):
 
 def translate(bot, update):
     text = update.message.text
-
-    if text == 'ℹ️':
-        info(bot, update)
-        return
-    elif text == 'Setup':
-        setup(bot, update)
-        return
-
     source, target = get_from_db(chat_id=update.message.chat_id, source=True, target=True)
-
-    result, data = d.translate(text, source=source, target=target)
+    result, data = deepl.translate(text, source=source, target=target)
     update.message.reply_text(result, quote=True)
 
 
 if __name__ == '__main__':
     up = Updater(TOKEN)
+    deepl = DeepL()
     setup_db()
-    d = DeepL()
 
     up.dispatcher.add_handler(CommandHandler('start', start))
+    up.dispatcher.add_handler(CommandHandler('setup', setup))
+    up.dispatcher.add_handler(CommandHandler('info', info))
     up.dispatcher.add_handler(MessageHandler(Filters.text, translate))
-
     up.dispatcher.add_handler(CallbackQueryHandler(from_callback, pattern='^from'))
     up.dispatcher.add_handler(CallbackQueryHandler(to_callback, pattern='^to'))
 
     up.start_webhook(listen='127.0.0.1',
-                     url_path=f'{TOKEN}',  # should be the same as in your server.conf file (I prefer to use TOKEN)
+                     url_path=f'{TOKEN}',  # should be the same as in your server.conf file (TOKEN is preferred)
                      port=PORT)
     up.bot.set_webhook(url=f'{DOMAIN}/{TOKEN}')
     up.idle()

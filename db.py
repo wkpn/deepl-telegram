@@ -4,19 +4,20 @@ import sqlite3
 
 def setup_db():
     conn = sqlite3.connect(f'{db_name}')
-    try:
-        conn.cursor().execute('CREATE TABLE users (chat_id integer, source text, target text, is_selected text)')
-        conn.commit()
-        conn.close()
-    except sqlite3.OperationalError:
-        pass
-
-
-def add_to_db(chat_id, source, target):
-    conn = sqlite3.connect(f'{db_name}')
-    conn.cursor().execute('INSERT INTO users VALUES (?,?,?,?)', (chat_id, source, target, 0))
+    conn.cursor().execute('''CREATE TABLE IF NOT EXISTS users 
+                                 (chat_id integer unique, source text, target text, lock text)''')
     conn.commit()
     conn.close()
+
+
+def add_user_to_db(chat_id, source, target):
+    conn = sqlite3.connect(f'{db_name}')
+    try:
+        conn.cursor().execute('INSERT INTO users VALUES (?,?,?,?)', (chat_id, source, target, 0))
+        conn.commit()
+        conn.close()
+    except sqlite3.IntegrityError:
+        pass
 
 
 def get_from_db(chat_id, **kwargs):
@@ -27,6 +28,7 @@ def get_from_db(chat_id, **kwargs):
 
     if len(data) == 1:
         return data[0]
+
     return data
 
 
