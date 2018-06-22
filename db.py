@@ -26,7 +26,8 @@ def get_from_db(chat_id, **kwargs):
 
     conn = sqlite3.connect(f'{db_name}')
     data = conn.cursor().execute(f"SELECT {values} FROM users WHERE chat_id={chat_id}").fetchone()
-
+    conn.close()
+    
     if len(data) == 1:
         return data[0]
     return data
