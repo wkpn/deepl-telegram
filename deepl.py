@@ -68,7 +68,7 @@ class DeepL:
         self.request_id += 1
         current_id = self.request_id
 
-        url = 'https://www.deepl.com/jsonrpc'
+        url = 'https://www2.deepl.com/jsonrpc'
         headers = {'content-type': 'application/json'}
 
         payload = {
@@ -95,7 +95,7 @@ class DeepL:
         self.request_id += 1
         current_id = self.request_id
 
-        url = 'https://www.deepl.com/jsonrpc'
+        url = 'https://www2.deepl.com/jsonrpc'
         headers = {'content-type': 'application/json'}
 
         payload = {
