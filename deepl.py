@@ -2,11 +2,13 @@ import requests
 import json
 import sys
 import re
+import time
+import random
 
 
 class DeepL:
     def __init__(self):
-        self.request_id = 0
+        self.request_id = random.randint(0, 100000)
 
     def translate(self, text, source='auto', target=None, preferred_langs=[]):
         paragraphs = self.split_paragraphs(text)
@@ -69,15 +71,27 @@ class DeepL:
         current_id = self.request_id
 
         url = 'https://www2.deepl.com/jsonrpc'
-        headers = {'content-type': 'application/json'}
-
+        #headers = {'content-type': 'application/json'}
+        headers = {
+            'Content-Type': 'text/plain',
+            'Accept': '*/*',
+            'Host': 'www2.deepl.com',
+            'Accept-Language': 'en-us',
+            'Accept-Encoding': 'br, gzip, deflate',
+            'Origin': 'https://www.deepl.com',
+            'Referer': 'https://www.deepl.com/translator',
+            #'Content-Length': '339',
+            'DNT': '1',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15',
+            'Connection': 'keep-alive',
+        }
         payload = {
             'method': 'LMT_split_into_sentences',
             'params': {
                 'texts': [p for p in request_paragraphs],
                 'lang': {
                     'lang_user_selected': source,
-                    'user_preferred_langs': json.dumps(preferred_langs),
+                    'user_preferred_langs': preferred_langs,
                 },
             },
             'jsonrpc': '2.0',
@@ -96,8 +110,20 @@ class DeepL:
         current_id = self.request_id
 
         url = 'https://www2.deepl.com/jsonrpc'
-        headers = {'content-type': 'application/json'}
-
+        #headers = {'content-type': 'application/json'}
+        headers = {
+            'Content-Type': 'text/plain',
+            'Accept': '*/*',
+            'Host': 'www2.deepl.com',
+            'Accept-Language': 'en-us',
+            'Accept-Encoding': 'br, gzip, deflate',
+            'Origin': 'https://www.deepl.com',
+            'Referer': 'https://www.deepl.com/translator',
+            #'Content-Length': '339',
+            'DNT': '1',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15',
+            'Connection': 'keep-alive',
+        }
         payload = {
             'method': 'LMT_handle_jobs',
             'params': {
@@ -110,6 +136,8 @@ class DeepL:
                 'lang': {
                     'user_preferred_langs': preferred_langs,
                 },
+                'priority': -1,
+                'timestamp': time.time()
             },
             'jsonrpc': '2.0',
             'id': current_id,
@@ -129,3 +157,8 @@ class DeepL:
             'source': r['result']['source_lang'],
             'target': r['result']['target_lang']
         }
+
+#d = DeepL()
+
+#a = d.translate('How to steal a cat', source='EN', target='DE')
+#print()

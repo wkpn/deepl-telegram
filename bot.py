@@ -85,8 +85,9 @@ if __name__ == '__main__':
     up.dispatcher.add_handler(CallbackQueryHandler(from_callback, pattern='^from'))
     up.dispatcher.add_handler(CallbackQueryHandler(to_callback, pattern='^to'))
 
-    up.start_webhook(listen='127.0.0.1',
-                     url_path=f'{TOKEN}',  # should be the same as in your server.conf file (TOKEN is preferred)
-                     port=PORT)
-    up.bot.set_webhook(url=f'{DOMAIN}/{TOKEN}')
+    #up.start_webhook(listen='127.0.0.1',
+    #                 url_path=f'{TOKEN}',  # should be the same as in your server.conf file (TOKEN is preferred)
+    #                 port=PORT)
+    #up.bot.set_webhook(url=f'{DOMAIN}/{TOKEN}')
+    up.start_polling()
     up.idle()
