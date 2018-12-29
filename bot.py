@@ -1,7 +1,7 @@
 from telegram.ext import Updater, CallbackQueryHandler, CommandHandler, MessageHandler, Filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from db import setup_db, add_user_to_db, get_from_db, update_in_db
-from settings import flags, meaning, TOKEN, DOMAIN, PORT
+from settings import cc, get_flag, clr, meaning, TOKEN, DOMAIN, PORT
 from deepl import DeepL
 
 
@@ -19,7 +19,7 @@ def from_callback(bot, update):
 
     update_in_db(query.message.chat_id, source=source)
 
-    buttons = [[InlineKeyboardButton(text=f, callback_data='to' + flags[f]) for f in flags if flags[f] != source]]
+    buttons = [[InlineKeyboardButton(text=get_flag(f), callback_data='to' + clr(f)) for f in cc if clr(f) != source]]
     reply_markup = InlineKeyboardMarkup(buttons)
 
     bot.edit_message_text(text='Please choose language to translate into:',
@@ -49,8 +49,14 @@ def setup(bot, update):
 
     update_in_db(update.message.chat_id, lock='1')
 
-    buttons = [[InlineKeyboardButton(text=f, callback_data='from' + flags[f]) for f in flags]]
-    reply_markup = InlineKeyboardMarkup(buttons)
+    first_row = cc[:5]
+    second_row = cc[5:]
+
+    buttons = [
+        [InlineKeyboardButton(text=get_flag(f), callback_data='from' + clr(f)) for f in first_row],
+        [InlineKeyboardButton(text=get_flag(f), callback_data='from' + f) for f in second_row]
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons, resize_keyboard=False)
 
     update.message.reply_text('Please choose language to translate from:', reply_markup=reply_markup)
 
@@ -85,9 +91,8 @@ if __name__ == '__main__':
     up.dispatcher.add_handler(CallbackQueryHandler(from_callback, pattern='^from'))
     up.dispatcher.add_handler(CallbackQueryHandler(to_callback, pattern='^to'))
 
-    #up.start_webhook(listen='127.0.0.1',
-    #                 url_path=f'{TOKEN}',  # should be the same as in your server.conf file (TOKEN is preferred)
-    #                 port=PORT)
-    #up.bot.set_webhook(url=f'{DOMAIN}/{TOKEN}')
-    up.start_polling()
+    up.start_webhook(listen='127.0.0.1',
+                     url_path=f'{TOKEN}',  # should be the same as in your server.conf file (TOKEN is preferred)
+                     port=PORT)
+    up.bot.set_webhook(url=f'{DOMAIN}/{TOKEN}')
     up.idle()

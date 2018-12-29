@@ -8,7 +8,7 @@ import random
 
 class DeepL:
     def __init__(self):
-        self.request_id = random.randint(0, 100000)
+        self.request_id = random.randint(0, 1000000)
 
     def translate(self, text, source='auto', target=None, preferred_langs=[]):
         paragraphs = self.split_paragraphs(text)
@@ -71,20 +71,7 @@ class DeepL:
         current_id = self.request_id
 
         url = 'https://www2.deepl.com/jsonrpc'
-        #headers = {'content-type': 'application/json'}
-        headers = {
-            'Content-Type': 'text/plain',
-            'Accept': '*/*',
-            'Host': 'www2.deepl.com',
-            'Accept-Language': 'en-us',
-            'Accept-Encoding': 'br, gzip, deflate',
-            'Origin': 'https://www.deepl.com',
-            'Referer': 'https://www.deepl.com/translator',
-            #'Content-Length': '339',
-            'DNT': '1',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15',
-            'Connection': 'keep-alive',
-        }
+        headers = {'content-type': 'application/json'}
         payload = {
             'method': 'LMT_split_into_sentences',
             'params': {
@@ -98,9 +85,9 @@ class DeepL:
             'id': current_id,
         }
 
-        response = requests.post(url, data=json.dumps(payload), headers=headers).json()
+        r = requests.post(url, data=json.dumps(payload), headers=headers).json()
 
-        for i, paragraph in enumerate(response['result']['splitted_texts']):
+        for i, paragraph in enumerate(r['result']['splitted_texts']):
             splitted_paragraphs[request_paragraph_ids[i]] = paragraph
 
         return [s for paragraph in splitted_paragraphs for s in paragraph]
@@ -110,20 +97,7 @@ class DeepL:
         current_id = self.request_id
 
         url = 'https://www2.deepl.com/jsonrpc'
-        #headers = {'content-type': 'application/json'}
-        headers = {
-            'Content-Type': 'text/plain',
-            'Accept': '*/*',
-            'Host': 'www2.deepl.com',
-            'Accept-Language': 'en-us',
-            'Accept-Encoding': 'br, gzip, deflate',
-            'Origin': 'https://www.deepl.com',
-            'Referer': 'https://www.deepl.com/translator',
-            #'Content-Length': '339',
-            'DNT': '1',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15',
-            'Connection': 'keep-alive',
-        }
+        headers = {'content-type': 'application/json'}
         payload = {
             'method': 'LMT_handle_jobs',
             'params': {
@@ -157,8 +131,3 @@ class DeepL:
             'source': r['result']['source_lang'],
             'target': r['result']['target_lang']
         }
-
-#d = DeepL()
-
-#a = d.translate('How to steal a cat', source='EN', target='DE')
-#print()
